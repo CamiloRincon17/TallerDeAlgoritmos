@@ -327,3 +327,369 @@ S(n)=O(1)
 $$
 
 Si hubiera que comprobar una lista de $n$ segmentos contra otros $m$, la complejidad sería $O(nm)$, aunque la comparación individual siga siendo $O(1).
+
+---
+
+# Ejercicio 3: Comprobaciones entre tuberías
+
+Para determinar cuántos pares de tuberías se pueden interceptar se revisan dos tuberías a la vez. La comparación $i$ con $j$ debe realizarse una sola vez.
+
+## 1. ¿Por qué el segundo ciclo debe usar $j=i+1$?
+
+Cada tubería se compara con las tuberías que vienen después de ella.
+
+```python
+for i in range(n):
+    for j in range(i + 1, n):
+        print("Comprobación:", i, j)
+```
+
+Por ejemplo, si $i=1$, comenzar desde $j=2$ evita comparar:
+
+- El par consigo mismo: $(1,1)$.
+- Un par que ya fue comprobado: $(1,0)$, si $j<i$.
+- La tubería $1$ con la tubería $0$, que corresponde a $(0,1)$ y ya fue procesado.
+
+Si se usa $j=0$, se repetían pares y cada tubo podría compararse consigo mismo.
+
+## 2. Tabla de iteraciones
+
+### Para $N=5$
+
+| $i$ | Valores de $j$ | Comprobaciones |
+|---:|---|---:|
+| 0 | 1, 2, 3, 4 | 4 |
+| 1 | 2, 3, 4 | 3 |
+| 2 | 3, 4 | 2 |
+| 3 | 4 | 1 |
+| 4 | Ninguno | 0 |
+|  | **Total** | **10** |
+
+### Para $N=8$
+
+| $i$ | Valores de $j$ | Comprobaciones |
+|---:|---|---:|
+| 0 | 1, 2, 3, 4, 5, 6, 7 | 7 |
+| 1 | 2, 3, 4, 5, 6, 7 | 6 |
+| 2 | 3, 4, 5, 6, 7 | 5 |
+| 3 | 4, 5, 6, 7 | 4 |
+| 4 | 5, 6, 7 | 3 |
+| 5 | 6, 7 | 2 |
+| 6 | 7 | 1 |
+| 7 | Ninguno | 0 |
+|  | **Total** | **28** |
+
+## 3. Expresión exacta de las llamadas
+
+La función `interceptan` se llama una vez por cada par distinto de tuberías:
+
+$$
+T(n)=\sum_{i=0}^{n-1}\sum_{j=i+1}^{n-1}1
+$$
+
+Esta sumatoria representa todas las combinaciones posibles de dos tuberías tomadas de un conjunto de $n$ elementos:
+
+$$
+T(n)=\binom{n}{2}=\frac{n(n-1)}{2}
+$$
+
+También puede escribirse como:
+
+$$
+T(n)=1+2+3+\cdots+(n-1)
+$$
+
+## 4. Desarrollo y complejidad
+
+La cantidad de comprobaciones es:
+
+$$
+\begin{aligned}
+T(n)
+&=\sum_{i=0}^{n-1}(n-i-1)\\
+&=(n-1)+(n-2)+\cdots+1\\
+&=\frac{(n-1)n}{2}\\
+&=\frac{n^2-n}{2}
+\end{aligned}
+$$
+
+Al simplificar el término dominante:
+
+$$
+T(n)=\frac{1}{2}n^2-\frac{1}{2}n
+$$
+
+Por lo tanto:
+
+- **Complejidad temporal:** $O(n^2)$.
+- **Complejidad temporal aproximada:** $\Theta(n^2)$.
+- **Complejidad de espacio:** $O(1)$ si solo se realizan contadores y comparaciones.
+
+## 5. Comprobaciones para grandes cantidades
+
+Usando:
+
+$$
+T(n)=\frac{n(n-1)}{2}
+$$
+
+| Tuberías $n$ | Operaciones exactas |
+|---:|---:|
+| 100 | $100\cdot99/2=4.950$ |
+| 1.000 | $1.000\cdot999/2=499.500$ |
+| 10.000 | $10.000\cdot9.999/2=49.995.000$ |
+
+Para $100$ tuberías se realizan $4.950$ llamadas. Para $1.000$, $499.500$. Para $10.000$, $49.995.000$.
+
+```python
+import itertools
+
+
+def numero_comprobaciones(n):
+    """Calcula llamadas a interseccion para cada par distinto."""
+    return n * (n - 1) // 2
+
+
+for tuberias in (5, 8, 100, 1000, 10000):
+    print(tuberias, numero_comprobaciones(tuberias))
+```
+
+---
+
+# Ejercicio 4: Triangulación de un terreno irregular
+
+## Datos del terreno
+
+Los vértices se encuentran conectados en el siguiente orden:
+
+$$
+A(0,0),\ B(8,0),\ C(8,6),\ D(4,3),\ E(0,6)
+$$
+
+La lista del polígono es:
+
+```text
+A → B → C → D → E → A
+```
+
+## 1. Vértices convexos y cóncavos
+
+Se utiliza el determinante entre cada vértice y sus dos vecinos:
+
+$$
+\operatorname{orient}(P,Q,R)
+=(Q_x-P_x)(R_y-P_y)-(Q_y-P_y)(R_x-P_x)
+$$
+
+### Tabla de orientaciones
+
+| Vértice | Vecinos | Determinante | Clasificación |
+|---|---|---:|---|
+| $A$ | $E,A,B$ | $48$ | Convexo |
+| $B$ | $A,B,C$ | $48$ | Convexo |
+| $C$ | $B,C,D$ | $24$ | Convexo |
+| $D$ | $C,D,E$ | $-24$ | Cóncavo |
+| $E$ | $D,E,A$ | $24$ | Convexo |
+
+> Si todos los giros mantienen el mismo sentido positivo, el vértice es convexo. Un giro negativo indica un vértice cóncavo.
+
+## Ejemplos de cálculo
+
+En $D$:
+
+$$
+\begin{aligned}
+\operatorname{orient}(C,D,E)
+&=(4-8)(6-3)-(3-6)(0-4)\\
+&=(-4)(3)-(-3)(-4)\\
+&=-12-12\\
+&=-24
+\end{aligned}
+$$
+
+Como el determinante es negativo, $D$ es una **concavidad**.
+
+En $C$:
+
+$$
+\begin{aligned}
+\operatorname{orient}(B,C,D)
+&=(8-8)(3-6)-(6-0)(4-8)\\
+&=0-6(-4)\\
+&=24
+\end{aligned}
+$$
+
+Como el determinante es positivo, $C$ es convexo.
+
+## 2. Triángulos y diagonales internas
+
+Para un polígono simple de $n$ vértices:
+
+$$
+T=n-2
+$$
+
+$$
+D=n-3
+$$
+
+Como $n=5$:
+
+- **Número de triángulos:** $5-2=3$.
+- **Número de diagonales internas:** $5-3=2$.
+
+Una triangulación válida es:
+
+```text
+A---B
+|  /| \
+| / |  \
+|/  D   C
+E    \ /
+  \___/
+```
+
+Una representación más útil sería dividirlo con las diagonales $AD$ y $BD$, obteniendo:
+
+- Triángulo $ABD$.
+- Triángulo $BCD$.
+- Triángulo $ADE$.
+
+Las diagonales internas son:
+
+```text
+AD
+BD
+```
+
+## 3. Triangulación válida
+
+```text
+ y
+ 6 | E●──────────●C
+   | |          /|
+   | |         / |
+   | |        D  |
+   | |       ●   |
+   | |      /|   |
+   | |     / |   |
+   | |    /  |   |
+ 0 | A●──●───●───●B
+   +--------------- x
+     0          8
+```
+
+Esta representación muestra una separación conceptual. Los triángulos pueden describirse por vértices:
+
+```text
+ABD, BCD y ADE
+```
+
+Las diagonales que separan dichos triángulos son:
+
+```text
+AD y BD
+```
+
+## 4. Primera oreja para Ear Clipping
+
+El vértice $C$ es convexo y su triángulo de oreja es:
+
+$$
+\triangle BCD
+$$
+
+El vértice $C$ puede recortarse porque:
+
+- $B$, $C$ y $D$ forman una orientación positiva.
+- Ningún otro vértice se encuentra dentro del triángulo $BCD$.
+- Al eliminar $C$, el polígono continúa siendo simple.
+
+Una vez retirado $C$, queda el polígono:
+
+```text
+A → B → D → E → A
+```
+
+Los triángulos restantes pueden obtenerse mediante otros recortes o usando la diagonal $BD$.
+
+## 5. Condiciones antes de retirar un vértice
+
+Antes de eliminar un vértice $P$ se deben verificar:
+
+1. **Convexidad:** el vértice debe formar una orientación convexa.
+2. **Oreja vacía:** ningún otro vértice debe estar estrictamente dentro del triángulo formado por sus vecinos.
+3. **No intersección:** la diagonal entre sus vecinos no debe cruzar el polígono.
+4. **Polígono simple:** retirar el triángulo no puede dividir ni generar puntos de autointersección.
+5. **Al menos tres vértices:** el proceso termina al llegar a un triángulo.
+
+El vértice cóncavo $D$ no puede seleccionarse inicialmente como oreja.
+
+## 6. Implementación en Python
+
+```python
+# Recibe el número de vértices y calcula triángulos y diagonales
+def triangulacion(n):
+    if n < 3:
+        return {
+            "triangulos": 0,
+            "diagonales_internas": 0
+        }
+
+    return {
+        "triangulos": n - 2,
+        "diagonales_internas": n - 3
+    }
+
+
+# Orientación de tres puntos
+def orientacion(P, Q, R):
+    valor = (
+        (Q[0] - P[0]) * (R[1] - P[1])
+        - (Q[1] - P[1]) * (R[0] - P[0])
+    )
+
+    if valor > 0:
+        return "convexo"
+    if valor < 0:
+        return "concavo"
+    return "colineal"
+
+
+vertices = [
+    ("A", (0, 0)),
+    ("B", (8, 0)),
+    ("C", (8, 6)),
+    ("D", (4, 3)),
+    ("E", (0, 6))
+]
+
+n = len(vertices)
+
+for i in range(n):
+    anterior = vertices[(i - 1) % n][1]
+    actual = vertices[i][1]
+    siguiente = vertices[(i + 1) % n][1]
+
+    nombre = vertices[i][0]
+    tipo = orientacion(anterior, actual, siguiente)
+
+    print(f"Vértice {nombre}: {tipo}")
+
+resultado = triangulacion(n)
+print("Triángulos:", resultado["triangulos"])
+print("Diagonales internas:", resultado["diagonales_internas"])
+```
+
+Salida esperada:
+
+```text
+Vértice A: convexo
+Vértice B: convexo
+Vértice C: convexo
+Vértice D: concavo
+Vértice E: convexo
+Triángulos: 3
+Diagonales internas: 2
+```
