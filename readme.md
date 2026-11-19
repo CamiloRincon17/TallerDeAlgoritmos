@@ -1,6 +1,4 @@
 # Taller de Algoritmos: Geometría Computacional
-
-
 ---
 
 ## Resumen de resultados
