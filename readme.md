@@ -1,7 +1,5 @@
 # Taller de Algoritmos: Geometría Computacional
 
-> Solución analítica, deducciones paso a paso, diagramas en texto (ASCII), análisis de complejidad $T(n)$ y código en Python.
-> Documento 100 % autocontenido en Markdown: no usa imágenes externas.
 
 ---
 
