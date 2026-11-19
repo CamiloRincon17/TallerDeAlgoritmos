@@ -445,3 +445,398 @@ Con diagonales $BD$ y $AD$, se obtienen los 3 triángulos:
 1. **Convexidad:** El vértice debe tener un ángulo interior menor a $180^\circ$ ($\Delta > 0$).
 2. **Triángulo vacío:** Ningún otro vértice del polígono puede quedar en el interior o sobre el borde del triángulo formado.
 3. **Diagonal interna estricta:** La diagonal que une a sus dos vecinos debe quedar completamente dentro del polígono sin cortar aristas.
+
+---
+
+##  Ejercicio 5: Comparación de algoritmos de triangulación
+
+> **Análisis de complejidad temporal:** comparación entre un algoritmo cúbico `O(n³)` y uno cuadrático `O(n²)`.
+
+---
+
+## 1. Comprensión y planteamiento del problema
+
+Una empresa de videojuegos necesita dividir polígonos que representan terrenos, edificios y obstáculos en regiones triangulares (**triangulación**), porque los motores gráficos y de colisiones trabajan de forma eficiente con triángulos. Dos equipos proponen implementaciones distintas y, como analizadores de algoritmos, debemos responder: 
+
+**¿qué algoritmo conviene utilizar?**
+
+| Propuesta       | Descripción                                            | Modelo de complejidad |
+|-----------------|--------------------------------------------------------|-----------------------|
+| **Algoritmo A** | Implementación sencilla con verificaciones repetidas.  | Cúbica: `n³`          |
+| **Algoritmo B** | Implementación mucho más eficiente.                    | Cuadrática: `n²`      |
+
+El propósito de este trabajo no es probar cuál de las dos produce una triangulación correcta, sino comparar el costo teórico de las dos propuestas a medida que aumenta el tamaño del polígono.
+
+---
+
+## 2. Identificación de la variable de entrada
+
+La variable de entrada se define como:
+
+`n` = número de vértices del polígono
+
+Los tamaños de entrada que exige el enunciado son:
+
+- `n = 10`
+- `n = 100`
+- `n = 1.000`
+
+Se aclara que `n` es la cantidad de vértices que recibe el algoritmo, no el número de triángulos que se obtienen al final. Un polígono simple de `n` vértices siempre produce `n − 2` triángulos.
+
+```text
+             V2
+          /   |  \
+         /    |   \
+       V3-----|----V1
+        \ \   |   / 
+         \  \ |  /
+          \   X
+         /  / |  \
+       V4----|----V0
+         \   |   /
+          \  |  /
+           V5---V6
+              V7
+```
+
+**Figura 1.** Ejemplo de triangulación: un polígono de `n = 8` vértices se divide en `n − 2 = 6` triángulos.
+
+---
+
+## 3. Planteamiento de las funciones de tiempo
+
+A partir de las complejidades dadas por el enunciado, y con coeficiente constante igual a uno, se establecen las siguientes funciones:
+
+- **Algoritmo A (cúbico):** `T_A(n) = n^3`
+- **Algoritmo B (cuadrático):** `T_B(n) = n^2`
+
+> **Supuesto del modelo:** como el enunciado no entrega coeficientes ni costos adicionales, se comparan directamente `n³` y `n²`. Los valores son unidades teóricas de operación, no segundos de ejecución medidos.
+
+---
+
+## 4. Cálculo de las funciones
+
+Se sustituyen los tres tamaños de entrada en las funciones de cada algoritmo.
+
+### Caso 1: `n = 10`
+
+| Algoritmo | Desarrollo                                          |
+|-----------|----------------------------------------------------:|
+| A         | `T_A(10) = 10^3 = 10 × 10 × 10 = 1.000`             |
+| B         | `T_B(10) = 10^2 = 10 × 10 = 100`                    |
+
+### Caso 2: `n = 100`
+
+| Algoritmo | Desarrollo                                          |
+|-----------|----------------------------------------------------:|
+| A         | `T_A(100) = 100^3 = 100 × 100 × 100 = 1.000.000`    |
+| B         | `T_B(100) = 100^2 = 100 × 100 = 10.000`             |
+
+### Caso 3: `n = 1.000`
+
+| Algoritmo | Desarrollo                                                     |
+|-----------|---------------------------------------------------------------:|
+| A         | `T_A(1.000) = 1.000^3 = 1.000 × 1.000 × 1.000 = 1.000.000.000` |
+| B         | `T_B(1.000) = 1.000^2 = 1.000 × 1.000 = 1.000.000`             |
+
+---
+
+## 5. Tabla comparativa
+
+La siguiente tabla reúne los resultados obtenidos para ambos algoritmos:
+
+| Tamaño `n` | `T_A(n) = n^3` | `T_B(n) = n^2` | `Big O de A` | `Big O de B` |
+|-----------:|---------------:|---------------:|-------------:|-------------:|
+| 10         | 1.000          | 100            | `O(n³)`      | `O(n²)`      |
+| 100        | 1.000.000      | 10.000         | `O(n³)`      | `O(n²)`      |
+| 1.000      | 1.000.000.000  | 1.000.000      | `O(n³)`      | `O(n²)`      |
+
+### Observaciones
+
+- El algoritmo A realiza más operaciones que el B en los tres tamaños de entrada.
+- La diferencia absoluta crece muy rápido: 900 operaciones de diferencia con `n = 10`, 990.000 con `n = 100` y 999.000.000 con `n = 1.000`.
+- La tendencia es clara: cada vez que `n` se multiplica por 10, A se multiplica por 1.000 y B solo por 100.
+
+---
+
+## 6. Determinación de la complejidad Big O
+
+Las dos funciones tienen un único término, así que la clase de crecimiento se identifica directamente:
+
+```text
+T_A(n) = n^3  =>  O(n^3)
+```
+
+```text
+T_B(n) = n^2  =>  O(n^2)
+```
+
+La función cúbica crece más rápidamente que la cuadrática cuando `n` aumenta, por lo que `n^2 = O(n^3)`, pero `n^3` no es `O(n^2)`. La notación Big O describe la tendencia de crecimiento del costo respecto al tamaño de entrada, no el tiempo exacto en segundos.
+
+---
+
+## 7. Cálculo de la razón entre los algoritmos
+
+Se divide el costo teórico del algoritmo A entre el costo teórico del algoritmo B:
+
+```text
+T_A(n) / T_B(n) = n^3 / n^2 = n
+```
+
+| Tamaño `n` | Sustitución                         | Resultado de la razón |
+|-----------:|-------------------------------------|----------------------:|
+| 10         | `10^3 / 10^2 = 1.000 / 100`         | **10**                |
+| 100        | `100^3 / 100^2 = 1.000.000 / 10.000`| **100**               |
+| 1.000      | `1.000^3 / 1.000^2 = 10^9 / 10^6`   | **1.000**             |
+
+**Interpretación:** la razón indica cuántas veces es mayor el costo teórico de A frente al de B. Con 10 vértices A cuesta 10 veces más; con 100 vértices, 100 veces más; y con 1.000 vértices, 1.000 veces más. La ventaja de B no es constante: crece de forma lineal con `n`.
+
+---
+
+## 8. Representación gráfica
+
+El gráfico usa escala logarítmica en ambos ejes: eje X = tamaño de entrada `n`, eje Y = operaciones teóricas `T(n)`, con una curva por algoritmo y los tamaños `n = 10`, `n = 100` y `n = 1.000` marcados. En escala log-log, `n³` y `n²` aparecen como rectas con pendientes 3 y 2, y la separación vertical entre ellas es precisamente la razón `n`.
+
+```text
+Operaciones T(n) [Escala Logarítmica]
+  ^
+10^9 |                                          *  T_A(1000) = 1.000.000.000
+10^8 |                                        / |
+10^7 |                                      /   |  <-- Razón = 1.000x
+10^6 |                        *           /     o  T_B(1000) = 1.000.000
+10^5 |                      / |         /     /
+10^4 |                    /   o       /     /      T_B(100)  = 10.000
+10^3 |      *           /   /       /     /        T_A(10)   = 1.000
+10^2 |    / o         /   /       /     /          T_B(10)   = 100
+10^1 |  / /         /   /       /     /
+  0  +------+---------+---------+-------------------> Tamaño de entrada (n)
+          n=10      n=100     n=1.000
+
+  Leyenda:   *---* Algoritmo A: O(n³)      o---o Algoritmo B: O(n²)
+```
+
+**Figura 2.** Crecimiento de `T_A(n) = n^3` y `T_B(n) = n^2` en escala logarítmica.
+
+```text
+Razón T_A(n) / T_B(n)
+  ^
+1.000 |                                   [#]  1.000 veces más costoso
+      |                                   [#]
+  500 |                                   [#]
+      |                                   [#]
+  100 |                  [#]              [#]  100 veces más costoso
+   10 |    [#]           [#]              [#]  10 veces más costoso
+    0 +-----+-------------+----------------+-------> Tamaño de entrada (n)
+          n=10          n=100           n=1.000
+```
+
+**Figura 3.** Razón `T_A(n) / T_B(n)` para `n = 10`, `100` y `1.000`.
+
+---
+
+## 9. Análisis e interpretación de los resultados
+
+1. **¿Cuál realiza más operaciones?** El algoritmo A, para todo `n > 1`. Con `n = 1.000` son 1.000 millones de operaciones frente a 1 millón del B.
+2. **¿Cómo cambia la diferencia?** Pasa de 900 a 990.000 y luego a 999.000.000 operaciones. Al multiplicar `n` por 10, la diferencia se multiplica aproximadamente por 1.000.
+3. **¿Qué significa la razón?** Que A necesita `n` veces más operaciones que B; mientras más grande el polígono, mayor es la ventaja del algoritmo B.
+4. **¿Por qué `n²` es más favorable que `n³`?** Porque `n^3 = n · n^2`, es decir, A hace el mismo trabajo que B multiplicado por un factor que crece con la entrada. Para entradas pequeñas la diferencia puede pasar desapercibida, pero para entradas grandes se vuelve decisiva.
+5. **¿Qué efecto tendría el crecimiento cúbico en un videojuego?** Un videojuego debe mantener unos 60 cuadros por segundo (≈ 16 ms por cuadro). Si el terreno o los obstáculos tienen miles de vértices, un algoritmo cúbico podría causar tirones (*lag*), tiempos de carga largos y mayor consumo de CPU, mientras que uno cuadrático escala de forma mucho más manejable.
+
+---
+
+## 10. Conclusión y elección del algoritmo
+
+Conviene utilizar el **algoritmo B**. Su crecimiento `O(n²)` es teóricamente más favorable que el `O(n³)` del algoritmo A: la razón `T_A(n) / T_B(n) = n` muestra que A es 10, 100 y 1.000 veces más costoso para `n = 10`, `n = 100` y `n = 1.000`, respectivamente, y la brecha sigue ampliándose con el tamaño del polígono.
+
+Sin embargo, la complejidad no demuestra por sí sola que una implementación sea geométricamente correcta. Antes de usar B en producción, la empresa debe comprobar que triangule correctamente los polígonos requeridos (incluidos los cóncavos) y que respete las condiciones del problema. Además, este análisis usa coeficientes iguales a uno; en la práctica conviene complementarlo con mediciones de tiempo reales.
+
+---
+
+## Anexo A. Códigos de ejemplo en Python
+
+Aunque el enunciado ya entrega los modelos de complejidad, se presentan dos implementaciones de ejemplo de triangulación por **recorte de orejas** (*ear clipping*) para ilustrar de dónde pueden provenir `n³` y `n²`. Un vértice es una “oreja” si el triángulo formado con sus dos vecinos es convexo y no contiene a ningún otro vértice del polígono.
+
+### A.1. Algoritmo A: `O(n³)`, verificaciones repetidas
+
+En cada una de las `n` iteraciones se recalculan todas las orejas: `n` iteraciones × `n` candidatos × `n` comprobaciones.
+
+```text
+Algoritmo A - Triangulación por "ear clipping" ingenuo. Complejidad: O(n^3)
+
+Idea: en CADA iteración se vuelven a verificar TODOS los vértices para saber
+cuáles son "orejas" (verificaciones repetidas). Cada verificación revisa los
+demás vértices del polígono.
+
+n iteraciones x n candidatos x n comprobaciones = O(n^3)
+```
+
+```python
+import math
+
+
+def cruz(a, b, c):
+    """Producto cruz (b-a) x (c-a). > 0 => giro a la izquierda (antihorario)."""
+    return (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0])
+
+
+def punto_en_triangulo(p, a, b, c):
+    return cruz(a, b, p) >= 0 and cruz(b, c, p) >= 0 and cruz(c, a, p) >= 0
+
+
+def es_oreja(poli, idx, i, contador):
+    """Verifica si el vértice idx[i] es una oreja. Cuesta O(n)."""
+    m = len(idx)
+    a, b, c = poli[idx[i - 1]], poli[idx[i]], poli[idx[(i + 1) % m]]
+
+    if cruz(a, b, c) <= 0:            # vértice reflejo (no convexo)
+        return False
+
+    for j in range(m):                # revisa los demás vértices
+        if j in (i - 1, i, (i + 1) % m):
+            continue
+        contador[0] += 1              # operación elemental contada
+        if punto_en_triangulo(poli[idx[j]], a, b, c):
+            return False
+
+    return True
+
+
+def triangular_A(poli):
+    """poli: lista de (x, y) en sentido antihorario. Devuelve (triángulos, operaciones)."""
+    idx = list(range(len(poli)))
+    triangulos, contador = [], [0]
+
+    while len(idx) > 3:
+        # Se recalculan TODAS las orejas en cada iteración (costo O(n^2))
+        orejas = [i for i in range(len(idx)) if es_oreja(poli, idx, i, contador)]
+        i = orejas[0]
+        triangulos.append((idx[i - 1], idx[i], idx[(i + 1) % len(idx)]))
+        idx.pop(i)                    # se "corta" la oreja
+
+    triangulos.append(tuple(idx))
+    return triangulos, contador[0]
+
+
+def poligono_regular(n):
+    return [
+        (math.cos(2 * math.pi * k / n), math.sin(2 * math.pi * k / n))
+        for k in range(n)
+    ]
+
+
+if __name__ == "__main__":
+    for n in (10, 50, 100):
+        tris, ops = triangular_A(poligono_regular(n))
+        print(
+            f"n={n:4d}  triángulos={len(tris):4d}  "
+            f"operaciones={ops:10d}  n^3={n**3:10d}"
+        )
+```
+
+### A.2. Algoritmo B: `O(n²)`, orejas almacenadas
+
+Las orejas se calculan una sola vez y, al cortar una, solo se re-verifican sus dos vecinos.
+
+```text
+Algoritmo B - Ear clipping optimizado. Complejidad: O(n^2)
+
+Idea: se calcula UNA sola vez cuáles vértices son orejas y se guarda el
+resultado. Al cortar una oreja solo cambian sus dos vecinos, así que
+únicamente esos dos se vuelven a verificar (no todos).
+
+inicio: n candidatos x n comprobaciones          = O(n^2)
+n iteraciones x 2 re-verificaciones x O(n)       = O(n^2)
+Total                                            = O(n^2)
+```
+
+```python
+from algoritmo_a import cruz, punto_en_triangulo, poligono_regular
+
+
+def triangular_B(poli):
+    """poli: lista de (x, y) en sentido antihorario. Devuelve (triángulos, operaciones)."""
+    n = len(poli)
+    prev = [(i - 1) % n for i in range(n)]      # lista doblemente enlazada
+    sig = [(i + 1) % n for i in range(n)]
+    contador = [0]
+
+    def es_oreja(i):
+        a, b, c = poli[prev[i]], poli[i], poli[sig[i]]
+        if cruz(a, b, c) <= 0:
+            return False
+
+        j = sig[sig[i]]
+        while j != prev[i]:                    # recorre los demás vértices
+            contador[0] += 1
+            if punto_en_triangulo(poli[j], a, b, c):
+                return False
+            j = sig[j]
+
+        return True
+
+    oreja = [es_oreja(i) for i in range(n)]      # cálculo inicial: O(n^2)
+    triangulos, restantes, i = [], n, 0
+
+    while restantes > 3:
+        while not oreja[i]:                     # busca una oreja ya marcada
+            i = sig[i]
+
+        p, s = prev[i], sig[i]
+        triangulos.append((p, i, s))
+        sig[p], prev[s] = s, p                  # se elimina el vértice i
+        restantes -= 1
+        oreja[p], oreja[s] = es_oreja(p), es_oreja(s)  # solo 2 re-verificaciones
+        i = s
+
+    triangulos.append((prev[i], i, sig[i]))
+    return triangulos, contador[0]
+
+
+if __name__ == "__main__":
+    for n in (10, 100, 1000):
+        tris, ops = triangular_B(poligono_regular(n))
+        print(
+            f"n={n:5d}  triángulos={len(tris):5d}  "
+            f"operaciones={ops:10d}  n^2={n**2:10d}"
+        )
+```
+
+> **Dependencia entre archivos:** el ejemplo del algoritmo B importa `cruz`, `punto_en_triangulo` y `poligono_regular` desde `algoritmo_a`. Para ejecutarlo de esa manera, ambos archivos deben estar en la misma carpeta y el código del algoritmo A debe guardarse como `algoritmo_a.py`.
+
+### A.3. Cálculo teórico y razón
+
+```python
+"""Cálculo teórico T_A(n)=n^3, T_B(n)=n^2 y razón T_A/T_B."""
+
+
+def T_A(n):
+    return n ** 3
+
+
+def T_B(n):
+    return n ** 2
+
+
+print(f"{'n':>6} {'T_A(n)':>16} {'T_B(n)':>12} {'T_A/T_B':>10}")
+for n in (10, 100, 1000):
+    print(f"{n:>6} {T_A(n):>16,} {T_B(n):>12,} {T_A(n)/T_B(n):>10.0f}")
+```
+
+### A.4. Verificación experimental (conteo de operaciones)
+
+Se ejecutaron ambos códigos sobre polígonos regulares contando las comprobaciones punto-en-triángulo. Los valores medidos tienen coeficientes distintos de uno (A ≈ `n³/3` y B ≈ `2n²`), pero confirman la forma del crecimiento: al multiplicar `n` por 10, A crece cerca de 1.000 veces y B cerca de 100 veces.
+
+| `n`   | Operaciones A  | Operaciones B | `n³`          | `n²`      |
+|------:|---------------:|--------------:|--------------:|----------:|
+| 10    | 231            | 112           | 1.000         | 100       |
+| 100   | 323.301        | 19.012        | 1.000.000     | 10.000    |
+| 1.000 | No ejecutado*  | 1.990.012     | 1.000.000.000 | 1.000.000 |
+
+*\* Con `n = 1.000`, A requeriría aproximadamente `3,3 × 10⁸` comprobaciones, demasiado lento para correrlo en Python puro.*
+
+---
+
+## Authors
+
+- [@Jhoan Molina Gómez](https://github.com/Molina-university)
+- [@Adrian Camilo Rincon](https://github.com/CamiloRincon17)
