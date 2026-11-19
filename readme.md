@@ -35,7 +35,7 @@ La herramienta central de la geometría computacional 2D es la **función de ori
 Dados tres puntos $P(x_P, y_P)$, $Q(x_Q, y_Q)$ y $R(x_R, y_R)$, el determinante de la matriz homogénea es el **doble del área signada** del triángulo $\triangle PQR$:
 
 $$
-\operatorname{orient}(P, Q, R) = \det \begin{pmatrix} x_P & y_P & 1 \\ x_Q & y_Q & 1 \\ x_R & y_R & 1 \end{pmatrix} = (x_Q - x_P)(y_R - y_P) - (y_Q - y_P)(x_R - x_P)
+\mathrm{orient}(P, Q, R) = \det \begin{pmatrix} x_P & y_P & 1 \\ x_Q & y_Q & 1 \\ x_R & y_R & 1 \end{pmatrix} = (x_Q - x_P)(y_R - y_P) - (y_Q - y_P)(x_R - x_P)
 $$
 
 ### Criterio de decisión
@@ -160,10 +160,10 @@ Dos autos autónomos recorren rutas representadas como segmentos de recta. Hay q
 
 Se calculan **cuatro orientaciones**:
 
-* $\mathcal{O}_1 = \operatorname{orient}(A, B, C)$: lado de $C$ respecto a la recta $AB$
-* $\mathcal{O}_2 = \operatorname{orient}(A, B, D)$: lado de $D$ respecto a la recta $AB$
-* $\mathcal{O}_3 = \operatorname{orient}(C, D, A)$: lado de $A$ respecto a la recta $CD$
-* $\mathcal{O}_4 = \operatorname{orient}(C, D, B)$: lado de $B$ respecto a la recta $CD$
+* $\mathcal{O}_1 = \mathrm{orient}(A, B, C)$: lado de $C$ respecto a la recta $AB$
+* $\mathcal{O}_2 = \mathrm{orient}(A, B, D)$: lado de $D$ respecto a la recta $AB$
+* $\mathcal{O}_3 = \mathrm{orient}(C, D, A)$: lado de $A$ respecto a la recta $CD$
+* $\mathcal{O}_4 = \mathrm{orient}(C, D, B)$: lado de $B$ respecto a la recta $CD$
 
 **Regla 1, cruce propio.** Los segmentos se cruzan si los extremos de cada uno quedan en lados opuestos de la recta del otro:
 
@@ -257,10 +257,10 @@ Leyenda: `#` segmento $AB$, `o` segmento $CD$, `X` punto de intersección, `█`
 
 | Orientación | Vectores | Desarrollo | Valor |
 |:---:|:---|:---|:---:|
-| $\mathcal{O}_1 = \operatorname{orient}(A,B,C)$ | $\vec{AB}=(6,4)$, $\vec{AC}=(1,5)$ | $(6)(5)-(4)(1)=30-4$ | **+26** |
-| $\mathcal{O}_2 = \operatorname{orient}(A,B,D)$ | $\vec{AB}=(6,4)$, $\vec{AD}=(7,0)$ | $(6)(0)-(4)(7)=0-28$ | **−28** |
-| $\mathcal{O}_3 = \operatorname{orient}(C,D,A)$ | $\vec{CD}=(6,-5)$, $\vec{CA}=(-1,-5)$ | $(6)(-5)-(-5)(-1)=-30-5$ | **−35** |
-| $\mathcal{O}_4 = \operatorname{orient}(C,D,B)$ | $\vec{CD}=(6,-5)$, $\vec{CB}=(5,-1)$ | $(6)(-1)-(-5)(5)=-6+25$ | **+19** |
+| $\mathcal{O}_1 = \mathrm{orient}(A,B,C)$ | $\vec{AB}=(6,4)$, $\vec{AC}=(1,5)$ | $(6)(5)-(4)(1)=30-4$ | **+26** |
+| $\mathcal{O}_2 = \mathrm{orient}(A,B,D)$ | $\vec{AB}=(6,4)$, $\vec{AD}=(7,0)$ | $(6)(0)-(4)(7)=0-28$ | **−28** |
+| $\mathcal{O}_3 = \mathrm{orient}(C,D,A)$ | $\vec{CD}=(6,-5)$, $\vec{CA}=(-1,-5)$ | $(6)(-5)-(-5)(-1)=-30-5$ | **−35** |
+| $\mathcal{O}_4 = \mathrm{orient}(C,D,B)$ | $\vec{CD}=(6,-5)$, $\vec{CB}=(5,-1)$ | $(6)(-1)-(-5)(5)=-6+25$ | **+19** |
 
 **Punto de intersección.** Con las orientaciones se obtiene el parámetro sobre $AB$:
 
@@ -411,7 +411,7 @@ $$2\cdot\text{Área} = \sum (x_i y_{i+1} - x_{i+1} y_i) = 0 + 48 + 0 + 24 + 0 = 
 
 ### 3. Planteamiento del método
 
-Para cada vértice $V$ con vecino anterior $P$ y siguiente $N$ se calcula $\Delta = \operatorname{orient}(P, V, N)$. Un vértice es **oreja** si cumple las tres condiciones:
+Para cada vértice $V$ con vecino anterior $P$ y siguiente $N$ se calcula $\Delta = \mathrm{orient}(P, V, N)$. Un vértice es **oreja** si cumple las tres condiciones:
 
 1. **Convexidad:** ángulo interior menor a $180^\circ$ ($\Delta > 0$).
 2. **Triángulo vacío:** ningún otro vértice del polígono queda dentro del triángulo $\triangle PVN$ ni sobre su borde.
