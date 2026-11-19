@@ -18,6 +18,7 @@
    - [5. Demostración de complejidad $O(1)$](#5-demostración-de-complejidad-o1)
 4. [Ejercicio 3: Comprobaciones entre $N$ Tuberías](#ejercicio-3-comprobaciones-entre-n-tuberías)
 5. [Ejercicio 4: Triangulación de un Terreno (Ear Clipping)](#ejercicio-4-triangulación-de-un-terreno-ear-clipping)
+6. [Ejercicio 5: Comparación de algoritmos de triangulación](Ejercicio-5:-Comparación-de-algoritmos-de-triangulación)
 
 ---
 
@@ -90,9 +91,9 @@ $$\Delta = (x_B - x_A)(y_C - y_A) - (y_B - y_A)(x_C - x_A)$$
 | Caso | Punto Anterior $A$ | Punto Actual $B$ | Punto Destino $C$ | Determinante $\Delta$ | Clasificación del Giro |
 |:---:|:---:|:---:|:---:|:---:|:---|
 | **Caso 1** | $(1, 2)$ | $(5, 3)$ | $(3, 7)$ | **$+18$** | **Antihorario (Izquierda)** |
-| **Caso 2** | $(2, 1)$ | $(6, 5)$ | $(8, 2)$ | **$-20$** | **Horario (Derecha)** |
-| **Caso 3** | $(1, 1)$ | $(3, 3)$ | $(6, 6)$ | **$0$** | **Colineal (Sin giro)** |
-| **Caso 4** | $(0, 4)$ | $(5, 4)$ | $(3, 1)$ | **$-15$** | **Horario (Derecha)** |
+| **Caso 2** | $(2, 1)$ | $(6, 5)$ | $(8, 2)$ | **$-20$** | **Horario (Derecha)**       |
+| **Caso 3** | $(1, 1)$ | $(3, 3)$ | $(6, 6)$ | **$0$**   | **Colineal (Sin giro)**     |
+| **Caso 4** | $(0, 4)$ | $(5, 4)$ | $(3, 1)$ | **$-15$** | **Horario (Derecha)**       |
 
 ---
 
