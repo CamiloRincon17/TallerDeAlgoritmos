@@ -1,6 +1,6 @@
 # Taller de Algoritmos: Geometría Computacional
 ---
-
+ 
 ## Resumen de resultados
 
 | Ejercicio | Tema | Resultado clave |
